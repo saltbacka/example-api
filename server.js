@@ -1,5 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const passport = require("passport");
 
 const users = require("./routes/users");
 
@@ -12,13 +14,19 @@ mongoose
   .then(() => console.log(`> MongoDB connected`))
   .catch(err => console.log(err));
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+app.use(passport.initialize());
+require("./config/passport")(passport);
+
 // Routes
 
 app.get("/version", (req, res) => {
   res.json({ version: package.version });
 });
 
-app.use("/api/users", users);
+app.use("/api", users);
 
 // Start the server
 
