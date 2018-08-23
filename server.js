@@ -29,6 +29,7 @@ app.get("/version", (req, res) => {
 
 app.use("/api", users);
 app.use("/api", locations);
+
 // Start the server
 
 app.listen(port, () => {
