@@ -17,6 +17,7 @@ router.get("/users", () => console.log("GET /"));
 // @desc    Create or register new user
 // @access  Public
 router.post("/users", (req, res) => {
+  // const { errors, isValid } = validate(req.body, )
   User.findOne({ email: req.body.email }).then(foundUser => {
     if (foundUser) {
       return res.status(400).json({ email: "Email already exists" });
@@ -56,7 +57,7 @@ router.get("/users/:id", (req, res) => {
 // @access  Public
 router.post("/authenticate", (req, res) => {
   const { email, password } = req.body;
-  User.findOne({ email }).then(foundUser => {
+  User.findOne({ email }, "+password").then(foundUser => {
     if (!foundUser) {
       return res.status(400).end();
     }
@@ -96,7 +97,9 @@ router.get(
     if (!req.user) {
       return res.status(400).end();
     }
-    return res.json(req.user);
+    User.findById(req.user.id)
+      .then(foundUser => res.json(foundUser))
+      .catch(error => res.status(400).json({ error }));
   }
 );
 
