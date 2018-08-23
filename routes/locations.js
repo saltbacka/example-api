@@ -10,6 +10,27 @@ router.get("/locations", (req, res) => {
   Location.find().then(foundLocations => res.json(foundLocations));
 });
 
+// @route   GET /api/locations/nearby
+// @desc    Get all nearby locations
+// @access  Public
+router.get("/locations/nearby", (req, res) => {
+  const lon = parseFloat(req.query.lon);
+  const lat = parseFloat(req.query.lat);
+  const p1 = [lon - 1, lat - 1];
+  const p2 = [lon - 1, lat + 1];
+  const p3 = [lon + 1, lat + 1];
+  const p4 = [lon + 1, lat - 1];
+  const area = {
+    type: "Polygon",
+    coordinates: [[p1, p2, p3, p4, p1]]
+  };
+  console.log(area);
+  Location.find()
+    .where("position")
+    .within(area)
+    .then(foundLocations => res.json(foundLocations));
+});
+
 // @route   POST /api/locations/
 // @desc    Create location
 // @access  Public
