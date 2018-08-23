@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const passport = require("passport");
 
 const users = require("./routes/users");
+const locations = require("./routes/locations");
 
 const package = require("./package.json");
 const app = express();
@@ -27,7 +28,7 @@ app.get("/version", (req, res) => {
 });
 
 app.use("/api", users);
-
+app.use("/api", locations);
 // Start the server
 
 app.listen(port, () => {
