@@ -11,13 +11,22 @@ const User = require("../models/user");
 // @route   GET /api/users/
 // @desc    Get all users
 // @access  Public
-router.get("/users", () => console.log("GET /"));
+router.get("/users", (req, res) =>
+  User.find()
+    .then(foundUsers => res.json(foundUsers))
+    .catch(error => res.status(500).json({ error }))
+);
 
 // @route   POST /api/users/
 // @desc    Create or register new user
 // @access  Public
 router.post("/users", (req, res) => {
   // const { errors, isValid } = validate(req.body, )
+  if (!req.body.email)
+    return res.status(400).json({ email: "Please fill email address" });
+  if (!req.body.password)
+    return res.status(400).json({ password: "Please fill email address" });
+
   User.findOne({ email: req.body.email }).then(foundUser => {
     if (foundUser) {
       return res.status(400).json({ email: "Email already exists" });
@@ -38,7 +47,9 @@ router.post("/users", (req, res) => {
         newUser.password = hash;
         newUser
           .save()
-          .then(createdUser => res.json(createdUser))
+          .then(createdUser =>
+            User.findById(createdUser.id).then(foundUser => res.json(foundUser))
+          )
           .catch(error => res.status(500).json({ error }));
       });
     });
@@ -49,7 +60,14 @@ router.post("/users", (req, res) => {
 // @desc    Get single user
 // @access  Public
 router.get("/users/:id", (req, res) => {
-  return res.json({ foo: "bar" });
+  User.findById(req.params.id)
+    .then(foundUser => {
+      if (!foundUser) {
+        return res.status(404).end();
+      }
+      return res.json(foundUser);
+    })
+    .catch(error => res.status(500).json({ error }));
 });
 
 // @route   POST /api/authenticate
