@@ -50,7 +50,7 @@ router.post("/locations", (req, res) => {
 // @desc    Get single location
 // @access  Public
 router.get("/locations/:id", (req, res) => {
-  Location.findById(req.param.id).then(foundLocation =>
+  Location.findById(req.params.id).then(foundLocation =>
     res.json(foundLocation)
   );
 });
