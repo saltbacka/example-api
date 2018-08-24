@@ -23,9 +23,8 @@ require("./config/passport")(passport);
 
 // Routes
 
-app.get("/version", (req, res) => {
-  res.json({ version: package.version });
-});
+app.get("/api", (req, res) => res.json({ now: new Date().getTime() }));
+app.get("/version", (req, res) => res.json({ version: package.version }));
 
 app.use("/api", users);
 app.use("/api", locations);
